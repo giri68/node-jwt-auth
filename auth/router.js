@@ -1,3 +1,5 @@
+// route her for endpoint /api/auth/
+
 const express = require('express');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
@@ -16,7 +18,7 @@ const router = express.Router();
 
 router.post(
     '/login',
-    // The user provides a username and password to login
+    // The user provides a username and password to login via headers/authorization
     passport.authenticate('basic', {session: false}),
     (req, res) => {
         const authToken = createAuthToken(req.user.apiRepr());

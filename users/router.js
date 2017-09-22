@@ -1,3 +1,5 @@
+// route her for endpoint /api/users/
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const passport = require('passport');
@@ -139,9 +141,21 @@ router.post('/', jsonParser, (req, res) => {
 // if we're creating users. keep in mind, you can also
 // verify this in the Mongo shell.
 router.get('/', (req, res) => {
-    return User.find()
+    return User
+        .find()
         .then(users => res.json(users.map(user => user.apiRepr())))
         .catch(err => res.status(500).json({message: 'Internal server error'}));
 });
+
+router.put('/:id', (req, res) => {
+    const updated = {};
+    const updateableFields = ['firstName', 'lastName', 'userName', 'password'];
+    updateableFields.forEach(field => {if (field in req.body){updated[field]=req.body[field];}})
+
+    User
+    .findByIdAndUpdate(req.params.id, {$set: updated}, {new: true})
+    .then(user => res.status(204).end())
+});
+
 
 module.exports = {router};

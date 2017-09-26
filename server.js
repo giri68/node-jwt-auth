@@ -1,15 +1,12 @@
 'use strict';
 
 const express = require('express');
-const app = express();
 const cors = require('cors');
 const morgan = require('morgan');
 const path = require('path');
 const passport = require('passport');
-const bodyParser = require('body-parser');
-const {DATABASE, PORT} = reuqire('./config');
-const knex = require('knex')(DATABASE);
-
+const mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
 require('dotenv').config();
 
 const { router: usersRouter } = require('./users');
@@ -17,14 +14,13 @@ const { router: authRouter, basicStrategy, jwtStrategy } = require('./auth');
 const { PORT, DATABASE_URL } = require('./config');
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
-
+const app = express();
 
 passport.use(basicStrategy);
 passport.use(jwtStrategy);
 
 app.use(morgan('common', { skip: () => process.env.NODE_ENV === 'test' }));
 app.use(cors());
-app.use(bodyParser.jason());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -40,26 +36,29 @@ app.use('*', (req, res) => {
 });
 
 let server;
-function runServer(database = DATABASE, port = PORT) {
+function runServer() {
   return new Promise((resolve, reject) => {
-    try {
-      knex = require('knex')(database);
-      server = app.listen(port, () => {
-        console.info(`App listening on port ${server.address().port}`);
-        resolve();
-      });
-    }
-    catch (err) {
-      console.error(`Can't start server: ${err}`);
-      reject(err);
-    }
+    mongoose.connect(DATABASE_URL, { useMongoClient: true }, err => {
+      if (err) {
+        return reject(err);
+      }
+      server = app
+        .listen(PORT, () => {
+          console.log(`Your app is listening on port ${PORT}`);
+          resolve();
+        })
+        .on('error', err => {
+          mongoose.disconnect();
+          reject(err);
+        });
+    });
   });
 }
 
 function closeServer() {
-  return knex.destroy().then(() => {
+  return mongoose.disconnect().then(() => {
     return new Promise((resolve, reject) => {
-      console.log('Closing servers');
+      console.log('Closing server');
       server.close(err => {
         if (err) {
           return reject(err);

@@ -1,11 +1,11 @@
 'use strict';
 
 const bcrypt = require('bcryptjs');
-const knex = require('knex');
+const mongoose = require('mongoose');
 
-knex.Promise = global.Promise;
+mongoose.Promise = global.Promise;
 
-const UserSchema = knex.Schema({
+const UserSchema = mongoose.Schema({
   username: {
     type: String,
     required: true,
@@ -29,6 +29,6 @@ UserSchema.statics.hashPassword = function (password) {
   return bcrypt.hash(password, 10);
 };
 
-const User = knex.models.User || knex.model('User', UserSchema);
+const User = mongoose.models.User || mongoose.model('User', UserSchema);
 
 module.exports = { User };

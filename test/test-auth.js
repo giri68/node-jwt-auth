@@ -1,6 +1,6 @@
 'use strict';
 
-global.DATABASE_URL = 'postgres://localhost/jwt-auth-demo-test';
+global.DATABASE_URL = 'postgresql://localhost/jwt-auth-demo-test';
 process.env.NODE_ENV = 'test';
 const chai = require('chai');
 const chaiHttp = require('chai-http');

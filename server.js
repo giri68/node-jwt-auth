@@ -9,6 +9,7 @@ const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 require('dotenv').config();
 
+const {router:boardGameRouter} = require('./boardgames');
 const { router: usersRouter } = require('./users');
 const { router: authRouter, basicStrategy, jwtStrategy } = require('./auth');
 const { PORT, DATABASE_URL } = require('./config');
@@ -26,7 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/users/', usersRouter);
 app.use('/api/auth/', authRouter);
-
+app.use('/api/boardgames', boardGameRouter);
 app.get('/api/protected', jwtAuth, (req, res) => {
   return res.json({ data: 'rosebud' });
 });

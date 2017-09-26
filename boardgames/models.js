@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
 
-const boardGameScheuma = mongoose.Schema({
+const boardGameSchema = mongoose.Schema({
   bgg_url:{
     type: String, 
     required: true,
@@ -36,18 +36,6 @@ const boardGameScheuma = mongoose.Schema({
   }
 });
 
-UserSchema.methods.apiRepr = function () {
-  return { username: this.username };
-};
+const BoardGame = mongoose.models.BoardGame || mongoose.model('BoardGame', boardGameSchema);
 
-UserSchema.methods.validatePassword = function (password) {
-  return bcrypt.compare(password, this.password);
-};
-
-UserSchema.statics.hashPassword = function (password) {
-  return bcrypt.hash(password, 10);
-};
-
-const User = mongoose.models.User || mongoose.model('User', UserSchema);
-
-module.exports = { User };
+module.exports = { BoardGame };

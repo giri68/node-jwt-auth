@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-'use strict';
-=======
-// route her for endpoint /api/users/
->>>>>>> e5654243479c9ae38bc6178b7e154799e7ffa877
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -15,7 +10,9 @@ const router = express.Router();
 const jsonParser = bodyParser.json();
 
 router.get('/', (req, res) => {
-  res.json('get working');
+  User.find()
+    .then(results => res.json(results));
+  //res.json('get working');
 });
 
 router.post('/', jsonParser, (req, res) => {
@@ -85,11 +82,13 @@ router.post('/', jsonParser, (req, res) => {
 
   const userGames = BoardGame.find()
     .then(games => {
+      //console.log('getting games', games);
       res.json({
+      
         games: games.map(game => game.apiRepr())
       });
     });
-
+  console.log('logging user games', userGames);
   let { username, password, firstName, lastName, email } = req.body;
 
   return User.find({ username })
@@ -121,31 +120,22 @@ router.post('/', jsonParser, (req, res) => {
     });
 });
 
-<<<<<<< HEAD
+router.get('/:id', (req, res) => {
+  User
+    .findById(req.params.id)
+    .then(games => {
+      res.json(games);
+    })
+    .catch(err=> res.status(500).json({message:'internatl server error'}));
+});
+
+router.delete('/:id', (req, res) => {
+  console.log('I should be deleting');
+  User
+    .findByIdAndRemove(req.params.id)
+    .then(game => res.status(204).end())
+    .catch(err => res.status(500).json({ message: 'internal server error' }));
+});
+
 
 module.exports = { router };
-=======
-// Never expose all your users like below in a prod application
-// we're just doing this so we have a quick way to see
-// if we're creating users. keep in mind, you can also
-// verify this in the Mongo shell.
-router.get('/', (req, res) => {
-    return User
-        .find()
-        .then(users => res.json(users.map(user => user.apiRepr())))
-        .catch(err => res.status(500).json({message: 'Internal server error'}));
-});
-
-router.put('/:id', (req, res) => {
-    const updated = {};
-    const updateableFields = ['firstName', 'lastName', 'userName', 'password'];
-    updateableFields.forEach(field => {if (field in req.body){updated[field]=req.body[field];}})
-
-    User
-    .findByIdAndUpdate(req.params.id, {$set: updated}, {new: true})
-    .then(user => res.status(204).end())
-});
-
-
-module.exports = {router};
->>>>>>> e5654243479c9ae38bc6178b7e154799e7ffa877

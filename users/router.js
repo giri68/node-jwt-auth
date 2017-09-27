@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const { User } = require('./models');
+const { BoardGame } = require('../boardgames');
 
 const router = express.Router();
 
@@ -14,7 +15,7 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', jsonParser, (req, res) => {
-  const requiredFields = ['username', 'password'];
+  const requiredFields = ['username', 'password', 'firstName', 'lastName'];
   const missingField = requiredFields.find(field => !(field in req.body));
 
   if (missingField) {
@@ -26,7 +27,7 @@ router.post('/', jsonParser, (req, res) => {
     });
   }
 
-  const stringFields = ['username', 'password'];
+  const stringFields = ['username', 'password', 'firstName', 'lastName', 'email'];
   const nonStringField = stringFields.find(
     field => field in req.body && typeof req.body[field] !== 'string'
   );
@@ -40,7 +41,7 @@ router.post('/', jsonParser, (req, res) => {
     });
   }
 
-  const explicityTrimmedFields = ['username', 'password'];
+  const explicityTrimmedFields = ['username', 'password', 'firstName', 'lastName'];
   const nonTrimmedField = explicityTrimmedFields.find(
     field => req.body[field].trim() !== req.body[field]
   );
@@ -78,7 +79,14 @@ router.post('/', jsonParser, (req, res) => {
     });
   }
 
-  let { username, password } = req.body;
+  const userGames = BoardGame.find()
+    .then(games => {
+      res.json({
+        games: games.map(game => game.apiRepr())
+      });
+    });
+
+  let { username, password, firstName, lastName, email } = req.body;
 
   return User.find({ username })
     .count()
@@ -94,7 +102,9 @@ router.post('/', jsonParser, (req, res) => {
       return User.hashPassword(password);
     })
     .then(hash => {
-      return User.create({ username, password: hash });
+      return User.create({ 
+        username, password: hash, firstName, lastName, email, arrayofGames:  userGames
+      });
     })
     .then(user => {
       return res.status(201).json(user.apiRepr());

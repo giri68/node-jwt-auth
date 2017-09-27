@@ -1,3 +1,4 @@
+'use strict';
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 
@@ -35,6 +36,16 @@ const boardGameSchema = mongoose.Schema({
     required: true
   }
 });
+
+boardGameSchema.methods.apiRepr = function () {
+  return { 
+    name: this.name,
+    minPlayers: this.minPlayers,
+    maxPlayers: this.maxPlayers,
+    avgTime: this.avgTime,
+    checked: this.checked
+  };
+};
 
 const BoardGame = mongoose.models.BoardGame || mongoose.model('BoardGame', boardGameSchema);
 

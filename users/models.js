@@ -14,11 +14,37 @@ const UserSchema = mongoose.Schema({
   password: {
     type: String,
     required: true
-  }
+  },
+  firstName: {
+    type: String,
+    required: true
+  },
+  lastName: {
+    type: String,
+    required: true
+  },
+  email: String,
+  role: {
+    type: String,
+    default: 'client'
+  },
+  arrayofGames : [{
+    gameName: String,
+    minPlayers: Number,
+    maxPlayers: Number,
+    averageTime: Number,
+    checked: {
+      type: Boolean,
+      default: false
+    }
+  }]
 });
 
 UserSchema.methods.apiRepr = function () {
-  return { username: this.username };
+  return { 
+    username: this.username,
+    firstName: this.firstName,
+    lastName: this.lastName };
 };
 
 UserSchema.methods.validatePassword = function (password) {

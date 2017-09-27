@@ -1,3 +1,4 @@
+'use strict';
 const {BoardGame} = require('./models');
 const {router} = require('./router');
 

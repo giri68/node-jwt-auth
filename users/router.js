@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 'use strict';
+=======
+// route her for endpoint /api/users/
+>>>>>>> e5654243479c9ae38bc6178b7e154799e7ffa877
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -117,5 +121,31 @@ router.post('/', jsonParser, (req, res) => {
     });
 });
 
+<<<<<<< HEAD
 
 module.exports = { router };
+=======
+// Never expose all your users like below in a prod application
+// we're just doing this so we have a quick way to see
+// if we're creating users. keep in mind, you can also
+// verify this in the Mongo shell.
+router.get('/', (req, res) => {
+    return User
+        .find()
+        .then(users => res.json(users.map(user => user.apiRepr())))
+        .catch(err => res.status(500).json({message: 'Internal server error'}));
+});
+
+router.put('/:id', (req, res) => {
+    const updated = {};
+    const updateableFields = ['firstName', 'lastName', 'userName', 'password'];
+    updateableFields.forEach(field => {if (field in req.body){updated[field]=req.body[field];}})
+
+    User
+    .findByIdAndUpdate(req.params.id, {$set: updated}, {new: true})
+    .then(user => res.status(204).end())
+});
+
+
+module.exports = {router};
+>>>>>>> e5654243479c9ae38bc6178b7e154799e7ffa877

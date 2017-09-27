@@ -31,6 +31,12 @@ router.delete('/:id', (req, res) => {
     .then(game => res.status(204).end())
     .catch(err => res.status(500).json({ message: 'internal server error' }));
 });
+router.delete('/restaurants/:id', (req, res) => {
+  BoardGame
+    .findByIdAndRemove(req.params.id)
+    .then(restaurant => res.status(204).end())
+    .catch(err => res.status(500).json({message: 'Internal server error'}));
+});
 
 router.post('/', jsonParser, (req, res) => {
   const requiredFields = ['bgg_url', 'name', 'minPlayers', 'maxPlayers', 'avgTime', 'avgRating', 'imgUrl'];

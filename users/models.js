@@ -29,14 +29,19 @@ const UserSchema = mongoose.Schema({
     default: 'client'
   },
   arrayofGames : [{
-    gameName: String,
-    minPlayers: Number,
-    maxPlayers: Number,
-    averageTime: Number,
-    checked: {
-      type: Boolean,
-      default: false
+    gameId: {type: mongoose.Schema.Types.ObjectId, ref: 'BoardGame'},
+    //gameName: String,
+    //minPlayers: Number,
+    //maxPlayers: Number,
+    numberOfPlayers: Number,
+    playTime: Number,
+    playedDate: {
+      type: Date, default: Date.now
     }
+    // checked: {
+    //   type: Boolean,
+    //   default: false
+    // }
   }]
 });
 

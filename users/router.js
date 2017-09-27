@@ -1,4 +1,4 @@
-
+'use strict';
 const express = require('express');
 const bodyParser = require('body-parser');
 
@@ -11,9 +11,11 @@ const jsonParser = bodyParser.json();
 
 router.get('/', (req, res) => {
   User.find()
+  .populate({path: 'arrayofGames.gameId', select: 'name'})
     .then(results => res.json(results));
   //res.json('get working');
 });
+
 
 router.post('/', jsonParser, (req, res) => {
   const requiredFields = ['username', 'password', 'firstName', 'lastName'];
@@ -123,7 +125,9 @@ router.post('/', jsonParser, (req, res) => {
 router.get('/:id', (req, res) => {
   User
     .findById(req.params.id)
+    .populate({path: 'arrayofGames.gameId', select: 'name'})
     .then(games => {
+
       res.json(games);
     })
     .catch(err=> res.status(500).json({message:'internatl server error'}));
@@ -136,6 +140,18 @@ router.delete('/:id', (req, res) => {
     .then(game => res.status(204).end())
     .catch(err => res.status(500).json({ message: 'internal server error' }));
 });
+
+router.post('/:userId/boardgames', jsonParser, (req, res)=> {
+  console.log(req.body.favouriteGameId);
+  User.findByIdAndUpdate(req.params.userId, {"$push": {
+    "arrayofGames": {gameId: req.body.favouriteGameId}
+    
+  }})
+  .then(game => res.status(204).end())
+  .catch(err => res.status(500).json({ message: 'internal server error' }));
+});
+
+// router.put('/:userId/boardgames/:gameId')
 
 
 module.exports = { router };

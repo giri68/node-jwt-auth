@@ -11,7 +11,9 @@ const router = express.Router();
 const jsonParser = bodyParser.json();
 
 router.get('/', (req, res) => {
-  res.json('get working');
+  User.find()
+    .then(results => res.json(results));
+  //res.json('get working');
 });
 
 router.post('/', jsonParser, (req, res) => {
@@ -81,11 +83,13 @@ router.post('/', jsonParser, (req, res) => {
 
   const userGames = BoardGame.find()
     .then(games => {
+      //console.log('getting games', games);
       res.json({
+      
         games: games.map(game => game.apiRepr())
       });
     });
-
+  console.log('logging user games', userGames);
   let { username, password, firstName, lastName, email } = req.body;
 
   return User.find({ username })

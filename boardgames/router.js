@@ -11,6 +11,12 @@ const jsonParser = bodyParser.json();
 router.get('/', (req, res) => {
   res.json('get working');
 });
+router.delete('/restaurants/:id', (req, res) => {
+  BoardGame
+    .findByIdAndRemove(req.params.id)
+    .then(restaurant => res.status(204).end())
+    .catch(err => res.status(500).json({message: 'Internal server error'}));
+});
 
 router.post('/', jsonParser, (req, res) => {
   const requiredFields = ['bgg_url', 'name', 'minPlayers', 'maxPlayers', 'avgTime', 'avgRating', 'imgUrl'];

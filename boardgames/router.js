@@ -47,33 +47,46 @@ router.post('/', jsonParser, jwtAuth, (req, res) => {
     });
   }
 
-let { bgg_url, name, minPlayers, maxPlayers, avgTime, avgRating, imgUrl } = req.body;
-// validation
+  let { bgg_url, name, minPlayers, maxPlayers, avgTime, avgRating, imgUrl } = req.body;
+  // validation
 
-// return BoardGame.find({ bgg_url, name, minPlayers, maxPlayers, avgTime, avgRating, imgUrl })
+  // return BoardGame.find({ bgg_url, name, minPlayers, maxPlayers, avgTime, avgRating, imgUrl })
 
-BoardGame.create({ bgg_url, name, minPlayers, maxPlayers, avgTime, avgRating, imgUrl })
-  .then(data => {
-    return res.status(201).json(data);
-  })
-  .catch(err => {
-    if (err.reason === 'ValidationError') {
-      return res.status(err.code).json(err);
-    }
-    if (err.code === 11000) {
-      return res.status(409).json({ code: 409, message: 'Duplicate boardgame' });
-    }
-    res.status(500).json({ code: 500, message: 'Internal server error' });
-  });
-  /*
-  BoardGame
-    .create({
-      bgg_url
-  })
-*/
-
+  BoardGame.create({ bgg_url, name, minPlayers, maxPlayers, avgTime, avgRating, imgUrl })
+    .then(data => {
+      return res.status(201).json(data);
+    })
+    .catch(err => {
+      if (err.reason === 'ValidationError') {
+        return res.status(err.code).json(err);
+      }
+      if (err.code === 11000) {
+        return res.status(409).json({ code: 409, message: 'Duplicate boardgame' });
+      }
+      res.status(500).json({ code: 500, message: 'Internal server error' });
+    });
 
 });
+
+router.put('/:boardgameid', jsonParser, (req, res) => {
+
+  BoardGame
+
+    .findByIdAndUpdate(req.params.boardgameid, {
+      $set: {
+        bgg_url:req.body.bgg_url,
+        name: req.body.name,
+        minPlayers: req.body.minPlayers,
+        maxPlayers: req.body.maxPlayers,
+        avgRating: req.body.avgRating,
+        avgTime: req.body.avgTime,
+        imgUrl: req.body.imgUrl
+      }
+    })
+    .then(game => res.status(204).end())
+    .catch(err => res.status(500).json({ message: 'Internal server error' }));
+});
+
 
 router.delete('/:id', (req, res) => {
   BoardGame

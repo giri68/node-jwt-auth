@@ -21,7 +21,7 @@ describe('Auth endpoints', function () {
   const lastName = 'exampleLastName';
 
   before(function () {
-    return runServer();
+    return runServer('mongodb://localhost/jwt-auth-demo-test');
   });
 
   after(function () {

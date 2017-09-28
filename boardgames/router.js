@@ -1,44 +1,40 @@
 'use strict';
 const express = require('express');
 const bodyParser = require('body-parser');
+const passport = require('passport');
+const jwt = require('jsonwebtoken');
 
 const { BoardGame } = require('./models');
 
 const router = express.Router();
 
 const jsonParser = bodyParser.json();
+const jwtAuth = passport.authenticate('jwt', { session: false });
 
-router.get('/', (req, res) => {
-  BoardGame.find()
-    .then(games => {
-      res.json(games);
-    });
-});
-
-router.get('/:id', (req, res) => {
+router.get('/', jsonParser, (req, res) => {
   BoardGame
-    .findById(req.params.id)
+    .find()
     .then(games => {
       res.json(games);
     })
-    .catch(err=> res.status(500).json({message:'internatl server error'}));
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({error: 'Search failed'});
+    });
 });
 
-router.delete('/:id', (req, res) => {
-  console.log('I should be deleting');
+router.get('/:id', jsonParser, (req, res)  => {
   BoardGame
-    .findByIdAndRemove(req.params.id)
-    .then(game => res.status(204).end())
-    .catch(err => res.status(500).json({ message: 'internal server error' }));
-});
-router.delete('/restaurants/:id', (req, res) => {
-  BoardGame
-    .findByIdAndRemove(req.params.id)
-    .then(restaurant => res.status(204).end())
-    .catch(err => res.status(500).json({message: 'Internal server error'}));
+    .findById(req.params.id)
+    .then(race => {
+      res.json(race.apiRepr());
+    })
+    .catch(err => {
+      res.status(500).json({error: 'internal server error'});
+    });
 });
 
-router.post('/', jsonParser, (req, res) => {
+router.post('/', jsonParser, jwtAuth,(req, res) => {
   const requiredFields = ['bgg_url', 'name', 'minPlayers', 'maxPlayers', 'avgTime', 'avgRating', 'imgUrl'];
   const missingField = requiredFields.find(field => !(field in req.body));
 
@@ -50,6 +46,14 @@ router.post('/', jsonParser, (req, res) => {
       location: missingField
     });
   }
+
+  router.delete('/:id', (req, res) => {
+    BoardGame
+      .findByIdAndRemove(req.params.id)
+      .then(() => {
+        req.status(204).end();
+      });
+  });
 
   let { bgg_url, name, minPlayers, maxPlayers, avgTime, avgRating, imgUrl } = req.body;
 

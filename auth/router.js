@@ -18,15 +18,10 @@ const createAuthToken = function(user) {
 const basicAuth = passport.authenticate('basic', { session: false });
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
-router.post(
-  '/login',
-  // The user provides a username and password to login via headers/authorization
-  passport.authenticate('basic', {session: false}),
-  (req, res) => {
-    const authToken = createAuthToken(req.user.apiRepr());
-    res.json({authToken});
-  }
-);
+router.post('/login', basicAuth, (req, res) => {
+  const authToken = createAuthToken(req.user.apiRepr());
+  res.json({ authToken });
+});
 
 router.post('/refresh', jwtAuth, (req, res) => {
   const authToken = createAuthToken(req.user);

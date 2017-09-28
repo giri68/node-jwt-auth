@@ -81,7 +81,7 @@ describe('/api/user', function () {
         return chai
           .request(app)
           .post('/api/users')
-          .send({ username: 1234, password })
+          .send({firstName,lastName, username: 1234, password })
           .then(() =>
             expect.fail(null, null, 'Request should not succeed')
           )
@@ -93,10 +93,10 @@ describe('/api/user', function () {
             const res = err.response;
             expect(res).to.have.status(422);
             expect(res.body.reason).to.equal('ValidationError');
-            // expect(res.body.message).to.equal(
-            //   'Incorrect field type: expected string'
-            // );
-          //   expect(res.body.location).to.equal('username');
+            expect(res.body.message).to.equal(
+              'Incorrect field type: expected string'
+            );
+            expect(res.body.location).to.equal('username');
           });
       });
       it('Should reject users with non-string password', function () {
@@ -257,26 +257,26 @@ describe('/api/user', function () {
             // expect(res.body.location).to.equal('username');
           });
       });
-      // it('Should create a new user', function () {
-      //   return chai
-      //     .request(app)
-      //     .post('/api/users')
-      //     .send({ username, password, firstName, lastName })
-      //     .then(res => {
-      //     //  expect(res).to.have.status(201);
-      //       expect(res.body).to.be.an('object');
-      //      // expect(res.body).to.have.keys('username');
-      //       //expect(res.body.username).to.equal(username);
-      //       return User.findOne({ username });
-      //     })
-      //     .then(user => {
-      //       expect(user).to.not.be.null;
-      //       return user.validatePassword(password);
-      //     })
-      //     .then(passwordIsCorrect => {
-      //       expect(passwordIsCorrect).to.be.true;
-      //     });
-      // });
+      it('Should create a new user', function () {
+        return chai
+          .request(app)
+          .post('/api/users')
+          .send({ username, password, firstName, lastName })
+          .then(res => {
+           expect(res).to.have.status(201);
+            expect(res.body).to.be.an('object');
+           expect(res.body).to.have.keys('username','firstName','lastName');
+            expect(res.body.username).to.equal(username);
+            return User.findOne({ username });
+          })
+          .then(user => {
+            expect(user).to.not.be.null;
+            return user.validatePassword(password);
+          })
+          .then(passwordIsCorrect => {
+            expect(passwordIsCorrect).to.be.true;
+          });
+      });
     });
   });
 });

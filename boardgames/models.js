@@ -39,6 +39,9 @@ const boardGameSchema = mongoose.Schema({
 
 boardGameSchema.methods.apiRepr = function () {
   return { 
+    avgRating:this.avgRating,
+    bgg_url:this.bgg_url,
+    imgUrl:this.imgUrl,
     name: this.name,
     minPlayers: this.minPlayers,
     maxPlayers: this.maxPlayers,

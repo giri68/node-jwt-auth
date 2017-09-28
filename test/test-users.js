@@ -184,7 +184,7 @@ describe('/api/user', function () {
             // expect(res.body.message).to.equal(
             //   'Must be at least 1 characters long'
             // );
-           // expect(res.body.location).to.equal('username');
+            // expect(res.body.location).to.equal('username');
           });
       });
       it('Should reject users with password less than ten characters', function () {
@@ -249,8 +249,8 @@ describe('/api/user', function () {
             }
 
             const res = err.response;
-         //  expect(res).to.have.status(422);
-          // expect(res.body.reason).to.equal('ValidationError');
+            //  expect(res).to.have.status(422);
+            // expect(res.body.reason).to.equal('ValidationError');
             // expect(res.body.message).to.equal(
             //   'Username already taken'
             // );

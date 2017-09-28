@@ -11,7 +11,7 @@ const jsonParser = bodyParser.json();
 
 router.get('/', (req, res) => {
   User.find()
-  .populate({path: 'arrayofGames.gameId', select: 'name'})
+    .populate({path: 'arrayofGames.gameId', select: 'name'})
     .then(results => res.json(results));
   //res.json('get working');
 });
@@ -143,15 +143,42 @@ router.delete('/:id', (req, res) => {
 
 router.post('/:userId/boardgames', jsonParser, (req, res)=> {
   console.log(req.body.favouriteGameId);
-  User.findByIdAndUpdate(req.params.userId, {"$push": {
-    "arrayofGames": {gameId: req.body.favouriteGameId}
+  User.findByIdAndUpdate(req.params.userId, {'$push': {
+    'arrayofGames': {gameId: req.body.favouriteGameId}
     
   }})
-  .then(game => res.status(204).end())
-  .catch(err => res.status(500).json({ message: 'internal server error' }));
+    .then(game => res.status(204).end())
+    .catch(err => res.status(500).json({ message: 'internal server error' }));
+});
+router.post('/:userId/playedgames', jsonParser, (req, res)=> {
+  //console.log(req.body.favouriteGameId);
+  User.findByIdAndUpdate(req.params.userId, {'$push': {
+    'arrayofGames': {numberOfPlayers: req.body.numberOfPlayers, playedTime: req.body.playedTime}
+    
+  }})
+    .then(game => res.status(204).end())
+    .catch(err => res.status(500).json({ message: 'internal server error' }));
 });
 
-// router.put('/:userId/boardgames/:gameId')
+router.put('/:userId/:gameId', jsonParser, (req, res) => {
+  //const toUpdate ={};
+  //const updateableFields = ['numberOfPlayers', 'playedTime'];
+  
+  // updateableFields.forEach(field => {
+  //   if (field in req.body) {
+  //     toUpdate[field] = req.body[field];
+  //   }
+  // });
+  console.log('req.parameters', req.params.userId);
+  User
+  // all key/value pairs in toUpdate will be updated -- that's what `$set` does
+    .findByIdAndUpdate(req.params.userId, {$set: {
+      'arrayofGames': {
+        numberOfPlayers: req.body.numberOfPlayers, 
+        playedTime: req.body.playedTime}}})
+    .then(game => res.status(204).end())
+    .catch(err => res.status(500).json({message: 'Internal server error'}));
+});
 
 
 module.exports = { router };

@@ -34,7 +34,7 @@ const UserSchema = mongoose.Schema({
     //minPlayers: Number,
     //maxPlayers: Number,
     numberOfPlayers: Number,
-    playTime: Number,
+    //playedTime: Number,
     playedDate: {
       type: Date, default: Date.now
     }

@@ -54,18 +54,7 @@ router.post('/', jsonParser, (req, res) => {
   let { bgg_url, name, minPlayers, maxPlayers, avgTime, avgRating, imgUrl } = req.body;
 
   return BoardGame.find({ bgg_url, name, minPlayers, maxPlayers, avgTime, avgRating, imgUrl })
-    // .count()
-    // .then(count => {
-    //   if (count > 0) {
-    //     return Promise.reject({
-    //       code: 422,
-    //       reason: 'ValidationError',
-    //       message: 'Username already taken',
-    //       location: 'username'
-    //     });
-    //   }
-    //   return User.hashPassword(password);
-    // })
+    
     .then(item => {
       return BoardGame.create({ bgg_url, name, minPlayers, maxPlayers, avgTime, avgRating, imgUrl });
     })

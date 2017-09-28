@@ -30,18 +30,11 @@ const UserSchema = mongoose.Schema({
   },
   arrayofGames : [{
     gameId: {type: mongoose.Schema.Types.ObjectId, ref: 'BoardGame'},
-    //gameName: String,
-    //minPlayers: Number,
-    //maxPlayers: Number,
     numberOfPlayers: Number,
     playedTime: Number,
     playedDate: {
       type: Date, default: Date.now
     }
-    // checked: {
-    //   type: Boolean,
-    //   default: false
-    // }
   }]
 });
 

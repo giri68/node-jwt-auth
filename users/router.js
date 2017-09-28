@@ -13,7 +13,6 @@ router.get('/', (req, res) => {
   User.find()
     .populate({path: 'arrayofGames.gameId', select: 'name'})
     .then(results => res.json(results));
-  //res.json('get working');
 });
 
 
@@ -82,15 +81,8 @@ router.post('/', jsonParser, (req, res) => {
     });
   }
 
-  const userGames = BoardGame.find()
-    .then(games => {
-      //console.log('getting games', games);
-      res.json({
-      
-        games: games.map(game => game.apiRepr())
-      });
-    });
-  console.log('logging user games', userGames);
+  
+
   let { username, password, firstName, lastName, email } = req.body;
 
   return User.find({ username })
@@ -108,7 +100,7 @@ router.post('/', jsonParser, (req, res) => {
     })
     .then(hash => {
       return User.create({ 
-        username, password: hash, firstName, lastName, email, arrayofGames:  userGames
+        username, password: hash, firstName, lastName, email
       });
     })
     .then(user => {
@@ -151,7 +143,7 @@ router.post('/:userId/boardgames', jsonParser, (req, res)=> {
     .catch(err => res.status(500).json({ message: 'internal server error' }));
 });
 router.post('/:userId/playedgames', jsonParser, (req, res)=> {
-  //console.log(req.body.favouriteGameId);
+  
   User.findByIdAndUpdate(req.params.userId, {'$push': {
     'arrayofGames': {numberOfPlayers: req.body.numberOfPlayers, playedTime: req.body.playedTime}
     
@@ -161,17 +153,9 @@ router.post('/:userId/playedgames', jsonParser, (req, res)=> {
 });
 
 router.put('/:userId/:gameId', jsonParser, (req, res) => {
-  //const toUpdate ={};
-  //const updateableFields = ['numberOfPlayers', 'playedTime'];
   
-  // updateableFields.forEach(field => {
-  //   if (field in req.body) {
-  //     toUpdate[field] = req.body[field];
-  //   }
-  // });
-  //console.log('req.parameters', req.params.userId);
   User
-  // all key/value pairs in toUpdate will be updated -- that's what `$set` does
+
     .findByIdAndUpdate(req.params.userId, {$set: {
       'arrayofGames': {
         numberOfPlayers: req.body.numberOfPlayers, 

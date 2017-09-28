@@ -19,22 +19,22 @@ router.get('/', jsonParser, (req, res) => {
     })
     .catch(err => {
       console.error(err);
-      res.status(500).json({error: 'Search failed'});
+      res.status(500).json({ error: 'Search failed' });
     });
 });
 
-router.get('/:id', jsonParser, (req, res)  => {
+router.get('/:id', jsonParser, (req, res) => {
   BoardGame
     .findById(req.params.id)
     .then(race => {
       res.json(race.apiRepr());
     })
     .catch(err => {
-      res.status(500).json({error: 'internal server error'});
+      res.status(500).json({ error: 'internal server error' });
     });
 });
 
-router.post('/', jsonParser, jwtAuth,(req, res) => {
+router.post('/', jsonParser, jwtAuth, (req, res) => {
   const requiredFields = ['bgg_url', 'name', 'minPlayers', 'maxPlayers', 'avgTime', 'avgRating', 'imgUrl'];
   const missingField = requiredFields.find(field => !(field in req.body));
 
@@ -47,31 +47,40 @@ router.post('/', jsonParser, jwtAuth,(req, res) => {
     });
   }
 
-  router.delete('/:id', (req, res) => {
-    BoardGame
-      .findByIdAndRemove(req.params.id)
-      .then(() => {
-        req.status(204).end();
-      });
+let { bgg_url, name, minPlayers, maxPlayers, avgTime, avgRating, imgUrl } = req.body;
+// validation
+
+// return BoardGame.find({ bgg_url, name, minPlayers, maxPlayers, avgTime, avgRating, imgUrl })
+
+BoardGame.create({ bgg_url, name, minPlayers, maxPlayers, avgTime, avgRating, imgUrl })
+  .then(data => {
+    return res.status(201).json(data);
+  })
+  .catch(err => {
+    if (err.reason === 'ValidationError') {
+      return res.status(err.code).json(err);
+    }
+    if (err.code === 11000) {
+      return res.status(409).json({ code: 409, message: 'Duplicate boardgame' });
+    }
+    res.status(500).json({ code: 500, message: 'Internal server error' });
   });
+  /*
+  BoardGame
+    .create({
+      bgg_url
+  })
+*/
 
-  let { bgg_url, name, minPlayers, maxPlayers, avgTime, avgRating, imgUrl } = req.body;
 
-  return BoardGame.find({ bgg_url, name, minPlayers, maxPlayers, avgTime, avgRating, imgUrl })
-    
-    .then(item => {
-      return BoardGame.create({ bgg_url, name, minPlayers, maxPlayers, avgTime, avgRating, imgUrl });
-    })
-    .then(data => {
-      return res.status(201).json(data);
-    })
-    .catch(err => {
-      if (err.reason === 'ValidationError') {
-        return res.status(err.code).json(err);
-      }
-      res.status(500).json({ code: 500, message: 'Internal server error' });
-    });
 });
 
+router.delete('/:id', (req, res) => {
+  BoardGame
+    .findByIdAndRemove(req.params.id)
+    .then(() => {
+      req.status(204).end();
+    });
+});
 
 module.exports = { router };

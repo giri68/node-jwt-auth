@@ -91,9 +91,8 @@ router.put('/:boardgameid', jsonParser, (req, res) => {
 router.delete('/:id', (req, res) => {
   BoardGame
     .findByIdAndRemove(req.params.id)
-    .then(() => {
-      req.status(204).end();
-    });
+    .then(game => res.status(204).end())
+    .catch(err => res.status(500).json({ message: 'Internal server error' }));
 });
 
 module.exports = { router };

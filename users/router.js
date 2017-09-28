@@ -30,7 +30,7 @@ router.post('/', jsonParser, (req, res) => {
     });
   }
 
-  const stringFields = ['username', 'password', 'firstName', 'lastName', 'email'];
+  const stringFields = ['username', 'password', 'firstName', 'lastName'];
   const nonStringField = stringFields.find(
     field => field in req.body && typeof req.body[field] !== 'string'
   );
@@ -169,7 +169,7 @@ router.put('/:userId/:gameId', jsonParser, (req, res) => {
   //     toUpdate[field] = req.body[field];
   //   }
   // });
-  console.log('req.parameters', req.params.userId);
+  //console.log('req.parameters', req.params.userId);
   User
   // all key/value pairs in toUpdate will be updated -- that's what `$set` does
     .findByIdAndUpdate(req.params.userId, {$set: {

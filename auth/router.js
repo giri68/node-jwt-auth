@@ -1,5 +1,5 @@
 // route her for endpoint /api/auth/
-
+'use strict';
 const express = require('express');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
@@ -19,13 +19,13 @@ const basicAuth = passport.authenticate('basic', { session: false });
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
 router.post(
-    '/login',
-    // The user provides a username and password to login via headers/authorization
-    passport.authenticate('basic', {session: false}),
-    (req, res) => {
-        const authToken = createAuthToken(req.user.apiRepr());
-        res.json({authToken});
-    }
+  '/login',
+  // The user provides a username and password to login via headers/authorization
+  passport.authenticate('basic', {session: false}),
+  (req, res) => {
+    const authToken = createAuthToken(req.user.apiRepr());
+    res.json({authToken});
+  }
 );
 
 router.post('/refresh', jwtAuth, (req, res) => {

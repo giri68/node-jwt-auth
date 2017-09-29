@@ -3,10 +3,11 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
-const { basicAuth } = require('../auth');
+
 const { User } = require('./models');
 const { BoardGame } = require('../boardgames');
 const config = require('../config');
+const basicAuth = passport.authenticate('basic', { session: false });
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
 const router = express.Router();
@@ -127,7 +128,7 @@ router.post('/', jsonParser,  (req, res) => {
 });
 
 
-router.post('/:id/selectedgames', jsonParser, (req, res)=> {
+router.post('/:id/selectedgames', jsonParser, basicAuth, (req, res)=> {
   //console.log(req.body.favouriteGameId);  
   User.findByIdAndUpdate(req.params.id, {'$push': {
     'arrayofGames': {gameId: req.body.selectedGameId}
@@ -147,7 +148,7 @@ router.post('/:id/usergames', jsonParser, (req, res)=> {
     .catch(err => res.status(500).json({ message: 'internal server error' }));
 });
 
-router.put('/:userId/game/:gameId', jsonParser, (req, res) => {
+router.put('/:userId/game/:gameId', jsonParser, basicAuth, (req, res) => {
   User.findOneAndUpdate(
     { _id: req.params.userId,
       'arrayofGames._id': req.params.gameId 

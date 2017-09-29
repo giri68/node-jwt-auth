@@ -44,6 +44,7 @@ describe('/api/boardgames', function() {
 
   describe('/api/boardgames', function () {
     describe('GET', function () {
+
       it('Should return all existing boardgames', function() {
         return chai
           .request(app)
@@ -64,6 +65,7 @@ describe('/api/boardgames', function() {
             }
           });
       });
+
       it('Should return the requested ID', function () {
         let boardgame;
         return BoardGame
@@ -89,7 +91,9 @@ describe('/api/boardgames', function() {
           });
       });
     });
+
     describe('POST', function() {
+
       it('Should add a boardgame', function () {
         const newBoardGame = {bgg_url: 'adf', name: 'name', minPlayers: minPlayers, maxPlayers:maxPlayers, avgTime:avgTime, avgRating:avgRating, imgUrl:imgUrl};
         const token = jwt.sign(
@@ -114,7 +118,6 @@ describe('/api/boardgames', function() {
             expect(res).to.have.status(201);
             expect(res).to.be.an('object');
             expect(res.body).to.include.keys('bgg_url', 'name','minPlayers','maxPlayers','avgTime','avgRating','imgUrl');
-            console.log(res.body._id);
             return BoardGame
               .findById(res.body._id)
               .then(function (boardgame) {
@@ -129,7 +132,9 @@ describe('/api/boardgames', function() {
           });
       });
     });
+
     describe('DELETE', function () {
+
       it('Should delete a boardgame', function () {
         let boardgame;
         
@@ -137,7 +142,6 @@ describe('/api/boardgames', function() {
           .findOne()
           .then(function (_boardgame) {
             boardgame = _boardgame;
-           // console.log('boardgame: '+boardgame);
             const token = jwt.sign(
               {
                 user: 'girimatt'
@@ -159,15 +163,15 @@ describe('/api/boardgames', function() {
           });
       });
     });
+
     describe('PUT', function () {
+      
       it('Should update a boardgame', function () {
         const newBoardGame= {bgg_url: bgg_url, name: name, minPlayers: minPlayers, maxPlayers:maxPlayers, avgTime:avgTime, avgRating:avgRating, imgUrl:imgUrl};
         let boardgame;
-        // console.log("newBoardGame.id "+newBoardGame.id);
         return BoardGame
           .findOne()
           .then(function (_boardgame) {
-            console.log(_boardgame)
             boardgame = _boardgame;
             newBoardGame._id = boardgame._id;
             const token = jwt.sign(

@@ -37,7 +37,7 @@ describe('/api/user', function () {
 
   describe('/api/users', function () {
     describe('POST', function () {
-      it.only('Should reject users with missing username', function () {
+      it('Should reject users with missing username', function () {
         return chai
           .request(app)
           .post('/api/users')

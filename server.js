@@ -1,5 +1,6 @@
 'use strict';
 
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
@@ -7,7 +8,7 @@ const path = require('path');
 const passport = require('passport');
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-require('dotenv').config();
+
 
 const {router:boardGameRouter} = require('./boardgames');
 const { router: usersRouter } = require('./users');

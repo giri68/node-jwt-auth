@@ -1,4 +1,3 @@
-// route her for endpoint /api/auth/
 'use strict';
 const express = require('express');
 const passport = require('passport');

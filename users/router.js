@@ -23,8 +23,19 @@ router.get('/', (req, res) => {
     .then(results => res.json(results));
 });
 
+router.get('/:id', (req, res) => {
+  User
+    .findById(req.params.id)
+    .populate({path: 'arrayofGames.gameId', select: 'name'})
+    .then(games => {
 
-router.post('/', jsonParser, (req, res) => {
+      res.json(games);
+    })
+    .catch(err=> res.status(500).json({message:'internatl server error'}));
+});
+
+
+router.post('/', jsonParser,  (req, res) => {
   const requiredFields = ['username', 'password', 'firstName', 'lastName'];
   const missingField = requiredFields.find(field => !(field in req.body));
 
@@ -122,37 +133,19 @@ router.post('/', jsonParser, (req, res) => {
     });
 });
 
-router.get('/:id', (req, res) => {
-  User
-    .findById(req.params.id)
-    .populate({path: 'arrayofGames.gameId', select: 'name'})
-    .then(games => {
 
-      res.json(games);
-    })
-    .catch(err=> res.status(500).json({message:'internatl server error'}));
-});
-
-router.delete('/:id', (req, res) => {
-  console.log('I should be deleting');
-  User
-    .findByIdAndRemove(req.params.id)
-    .then(game => res.status(204).end())
-    .catch(err => res.status(500).json({ message: 'internal server error' }));
-});
-
-router.post('/:userId/boardgames', jsonParser, (req, res)=> {
-  console.log(req.body.favouriteGameId);
-  User.findByIdAndUpdate(req.params.userId, {'$push': {
-    'arrayofGames': {gameId: req.body.favouriteGameId}
-    
+router.post('/:id/selectedgames', jsonParser, (req, res)=> {
+  //console.log(req.body.favouriteGameId);
+  User.findByIdAndUpdate(req.params.id, {'$push': {
+    'arrayofGames': {gameId: req.body.selectedGameId}
   }})
     .then(game => res.status(204).end())
     .catch(err => res.status(500).json({ message: 'internal server error' }));
 });
-router.post('/:userId/playedgames', jsonParser, (req, res)=> {
+
+router.post('/:id/usergames', jsonParser, (req, res)=> {
   
-  User.findByIdAndUpdate(req.params.userId, {'$push': {
+  User.findByIdAndUpdate(req.params.id, {'$push': {
     'arrayofGames': {numberOfPlayers: req.body.numberOfPlayers, playedTime: req.body.playedTime}
     
   }})
@@ -160,17 +153,33 @@ router.post('/:userId/playedgames', jsonParser, (req, res)=> {
     .catch(err => res.status(500).json({ message: 'internal server error' }));
 });
 
-router.put('/:userId/:gameId', jsonParser, (req, res) => {
+router.put('/:userId/game/:gameId', jsonParser, (req, res) => {
   
-  User
+  User.findOneAndUpdate(
+    { _id: req.params.userId, 'arrayofGames._id': req.params.gameId }, 
+    { 'arrayofGames.$.numberOfPlayers': req.body.numberOfPlayers,
+    'arrayofGames.$.playedTime': req.body.playedTime
+    },
+    {new: true}
+  )
+ // { 'addresses.$.city': "Phoenix" },
+//   User.update({$and: [{userId:req.params.userId}, {gameId: req.params.gameId}]}, {$set: {
+//     'arrayofGames': {
+//       numberOfPlayers: req.body.numberOfPlayers, 
+//       playedTime: req.body.playedTime}}})
 
-    .findByIdAndUpdate(req.params.userId, {$set: {
-      'arrayofGames': {
-        numberOfPlayers: req.body.numberOfPlayers, 
-        playedTime: req.body.playedTime}}})
     .then(game => res.status(204).end())
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 });
+
+
+// router.delete('/:id',  (req, res) => {
+//   //console.log('I should be deleting');
+//   User
+//     .findByIdAndRemove(req.params.id)
+//     .then(game => res.status(204).end())
+//     .catch(err => res.status(500).json({ message: 'internal server error' }));
+// });
 
 
 module.exports = { router };

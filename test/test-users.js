@@ -37,7 +37,7 @@ describe('/api/user', function () {
 
   describe('/api/users', function () {
     describe('POST', function () {
-      it('Should reject users with missing username', function () {
+      it.only('Should reject users with missing username', function () {
         return chai
           .request(app)
           .post('/api/users')
@@ -57,6 +57,7 @@ describe('/api/user', function () {
             expect(res.body.location).to.equal('username');
           });
       });
+      
       it('Should reject users with missing password', function () {
         return chai
           .request(app)
@@ -77,6 +78,7 @@ describe('/api/user', function () {
             expect(res.body.location).to.equal('password');
           });
       });
+
       it('Should reject users with non-string username', function () {
         return chai
           .request(app)
@@ -99,6 +101,7 @@ describe('/api/user', function () {
             expect(res.body.location).to.equal('username');
           });
       });
+
       it('Should reject users with non-string password', function () {
         return chai
           .request(app)
@@ -121,6 +124,7 @@ describe('/api/user', function () {
             expect(res.body.location).to.equal('password');
           });
       });
+
       it('Should reject users with non-trimmed username', function () {
         return chai
           .request(app)
@@ -143,6 +147,7 @@ describe('/api/user', function () {
             expect(res.body.location).to.equal('username');
           });
       });
+
       it('Should reject users with non-trimmed password', function () {
         return chai
           .request(app)
@@ -165,6 +170,7 @@ describe('/api/user', function () {
             expect(res.body.location).to.equal('password');
           });
       });
+
       it('Should reject users with empty username', function () {
         return chai
           .request(app)
@@ -187,6 +193,7 @@ describe('/api/user', function () {
             expect(res.body.location).to.equal('username');
           });
       });
+
       it('Should reject users with password less than ten characters', function () {
         return chai
           .request(app)
@@ -209,6 +216,7 @@ describe('/api/user', function () {
             expect(res.body.location).to.equal('password');
           });
       });
+
       it('Should reject users with password greater than 72 characters', function () {
         return chai
           .request(app)
@@ -231,6 +239,7 @@ describe('/api/user', function () {
             expect(res.body.location).to.equal('password');
           });
       });
+
       it('Should reject users with duplicate username', function () {
         // Create an initial user
         return User.create({ username, password, firstName, lastName })
@@ -257,6 +266,7 @@ describe('/api/user', function () {
             expect(res.body.location).to.equal('username');
           });
       });
+
       it('Should create a new user', function () {
         return chai
           .request(app)

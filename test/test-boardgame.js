@@ -130,15 +130,25 @@ describe('/api/boardgames', function() {
       });
     });
     describe('DELETE', function () {
+<<<<<<< HEAD
       
       it('Should delete a boardgame', function () {
        
         let boardgame;
+=======
+      it.only('Should delete a boardgame', function () {
+        let boardgame;
+        
+>>>>>>> b3cc535c2aa85b692f4f694bb9970c0ab298c4d6
         return BoardGame
           .findOne()
           .then(function (_boardgame) {
             boardgame = _boardgame;
+<<<<<<< HEAD
             console.log(boardgame);
+=======
+            console.log('boardgame: '+boardgame);
+>>>>>>> b3cc535c2aa85b692f4f694bb9970c0ab298c4d6
             const token = jwt.sign(
               {
                 user: 'girimatt'

@@ -130,12 +130,15 @@ describe('/api/boardgames', function() {
       });
     });
     describe('DELETE', function () {
+      
       it('Should delete a boardgame', function () {
+       
         let boardgame;
         return BoardGame
           .findOne()
           .then(function (_boardgame) {
             boardgame = _boardgame;
+            console.log(boardgame);
             const token = jwt.sign(
               {
                 user: 'girimatt'
@@ -149,7 +152,7 @@ describe('/api/boardgames', function() {
             );
             return chai
               .request(app)
-              .delete(`/api/boardgames/${boardgame.id}`)
+              .delete(`/api/boardgames/${boardgame._id}`)
               .set('authorization', `Bearer ${token}`);
           })
           .then(function(res) {
@@ -158,7 +161,7 @@ describe('/api/boardgames', function() {
       });
     });
     describe('PUT', function () {
-      it.only('Should update a boardgame', function () {
+      it('Should update a boardgame', function () {
         const newBoardGame= {bgg_url: bgg_url, name: name, minPlayers: minPlayers, maxPlayers:maxPlayers, avgTime:avgTime, avgRating:avgRating, imgUrl:imgUrl};
         let boardgame;
         // console.log("newBoardGame.id "+newBoardGame.id);

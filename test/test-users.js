@@ -277,29 +277,7 @@ describe('/api/user', function () {
             expect(passwordIsCorrect).to.be.true;
           });
       });
-<<<<<<< HEAD
-=======
-      it('Should create a new user', function () {
-        return chai
-          .request(app)
-          .post('/api/users')
-          .send({ username, password, firstName, lastName })
-          .then(res => {
-           expect(res).to.have.status(201);
-            expect(res.body).to.be.an('object');
-           expect(res.body).to.have.keys('username','firstName','lastName');
-            expect(res.body.username).to.equal(username);
-            return User.findOne({ username });
-          })
-          .then(user => {
-            expect(user).to.not.be.null;
-            return user.validatePassword(password);
-          })
-          .then(passwordIsCorrect => {
-            expect(passwordIsCorrect).to.be.true;
-          });
-      });
->>>>>>> b3cc535c2aa85b692f4f694bb9970c0ab298c4d6
+      
     });
   });
 });

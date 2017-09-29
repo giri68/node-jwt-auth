@@ -1,9 +1,17 @@
 'use strict';
 const express = require('express');
 const bodyParser = require('body-parser');
-
+const passport = require('passport');
+const jwt = require('jsonwebtoken');
 const { User } = require('./models');
 const { BoardGame } = require('../boardgames');
+const config = require('../config');
+
+
+
+
+
+const jwtAuth = passport.authenticate('jwt', { session: false });
 
 const router = express.Router();
 

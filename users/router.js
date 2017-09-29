@@ -6,11 +6,6 @@ const jwt = require('jsonwebtoken');
 const { User } = require('./models');
 const { BoardGame } = require('../boardgames');
 const config = require('../config');
-
-
-
-
-
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
 const router = express.Router();
@@ -28,7 +23,6 @@ router.get('/:id', (req, res) => {
     .findById(req.params.id)
     .populate({path: 'arrayofGames.gameId', select: 'name'})
     .then(games => {
-
       res.json(games);
     })
     .catch(err=> res.status(500).json({message:'internatl server error'}));
@@ -100,8 +94,6 @@ router.post('/', jsonParser,  (req, res) => {
     });
   }
 
-  
-
   let { username, password, firstName, lastName, email } = req.body;
 
   return User.find({ username })
@@ -144,42 +136,28 @@ router.post('/:id/selectedgames', jsonParser, (req, res)=> {
 });
 
 router.post('/:id/usergames', jsonParser, (req, res)=> {
-  
   User.findByIdAndUpdate(req.params.id, {'$push': {
-    'arrayofGames': {numberOfPlayers: req.body.numberOfPlayers, playedTime: req.body.playedTime}
-    
+    'arrayofGames': {
+      numberOfPlayers: req.body.numberOfPlayers,
+      playedTime: req.body.playedTime
+    }
   }})
     .then(game => res.status(204).end())
     .catch(err => res.status(500).json({ message: 'internal server error' }));
 });
 
 router.put('/:userId/game/:gameId', jsonParser, (req, res) => {
-  
   User.findOneAndUpdate(
-    { _id: req.params.userId, 'arrayofGames._id': req.params.gameId }, 
+    { _id: req.params.userId,
+      'arrayofGames._id': req.params.gameId 
+    }, 
     { 'arrayofGames.$.numberOfPlayers': req.body.numberOfPlayers,
-    'arrayofGames.$.playedTime': req.body.playedTime
+      'arrayofGames.$.playedTime': req.body.playedTime
     },
     {new: true}
   )
- // { 'addresses.$.city': "Phoenix" },
-//   User.update({$and: [{userId:req.params.userId}, {gameId: req.params.gameId}]}, {$set: {
-//     'arrayofGames': {
-//       numberOfPlayers: req.body.numberOfPlayers, 
-//       playedTime: req.body.playedTime}}})
-
     .then(game => res.status(204).end())
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 });
-
-
-// router.delete('/:id',  (req, res) => {
-//   //console.log('I should be deleting');
-//   User
-//     .findByIdAndRemove(req.params.id)
-//     .then(game => res.status(204).end())
-//     .catch(err => res.status(500).json({ message: 'internal server error' }));
-// });
-
 
 module.exports = { router };

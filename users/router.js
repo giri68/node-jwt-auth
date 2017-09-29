@@ -3,6 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
+const { basicAuth } = require('../auth');
 const { User } = require('./models');
 const { BoardGame } = require('../boardgames');
 const config = require('../config');
@@ -127,7 +128,7 @@ router.post('/', jsonParser,  (req, res) => {
 
 
 router.post('/:id/selectedgames', jsonParser, (req, res)=> {
-  //console.log(req.body.favouriteGameId);
+  //console.log(req.body.favouriteGameId);  
   User.findByIdAndUpdate(req.params.id, {'$push': {
     'arrayofGames': {gameId: req.body.selectedGameId}
   }})

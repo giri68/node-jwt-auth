@@ -66,7 +66,7 @@ router.post('/', jsonParser, jwtAuth, (req, res) => {
 
 });
 
-router.put('/:boardgameid', jsonParser, (req, res) => {
+router.put('/:boardgameid', jsonParser, jwtAuth, (req, res) => {
   BoardGame
     .findByIdAndUpdate(req.params.boardgameid, {
       $set: {
@@ -84,7 +84,7 @@ router.put('/:boardgameid', jsonParser, (req, res) => {
 });
 
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', jwtAuth, (req, res) => {
   BoardGame
     .findByIdAndRemove(req.params.id)
     .then(game => res.status(204).end())

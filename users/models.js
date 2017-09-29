@@ -28,14 +28,16 @@ const UserSchema = mongoose.Schema({
     type: String,
     default: 'client'
   },
-  arrayofGames : [{
-    gameId: {type: mongoose.Schema.Types.ObjectId, ref: 'BoardGame'},
-    numberOfPlayers: Number,
-    playedTime: Number,
-    playedDate: {
-      type: Date, default: Date.now
+  arrayofGames : [
+    {
+      gameId: {type: mongoose.Schema.Types.ObjectId, ref: 'BoardGame'},
+      numberOfPlayers: Number,
+      playedTime: Number,
+      playedDate: {
+        type: Date, default: Date.now
+      }
     }
-  }]
+  ]
 });
 
 UserSchema.methods.apiRepr = function () {

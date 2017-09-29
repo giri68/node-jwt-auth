@@ -48,11 +48,9 @@ router.post('/', jsonParser, jwtAuth, (req, res) => {
   }
 
   let { bgg_url, name, minPlayers, maxPlayers, avgTime, avgRating, imgUrl } = req.body;
-  // validation
-
-  // return BoardGame.find({ bgg_url, name, minPlayers, maxPlayers, avgTime, avgRating, imgUrl })
-
-  BoardGame.create({ bgg_url, name, minPlayers, maxPlayers, avgTime, avgRating, imgUrl })
+  
+  BoardGame
+    .create({ bgg_url, name, minPlayers, maxPlayers, avgTime, avgRating, imgUrl })
     .then(data => {
       return res.status(201).json(data);
     })
@@ -69,9 +67,7 @@ router.post('/', jsonParser, jwtAuth, (req, res) => {
 });
 
 router.put('/:boardgameid', jsonParser, (req, res) => {
-
   BoardGame
-
     .findByIdAndUpdate(req.params.boardgameid, {
       $set: {
         bgg_url:req.body.bgg_url,

@@ -129,7 +129,6 @@ router.post('/', jsonParser,  (req, res) => {
 
 
 router.post('/:id/selectedgames', jsonParser, basicAuth, (req, res)=> {
-  //console.log(req.body.favouriteGameId);  
   User.findByIdAndUpdate(req.params.id, {'$push': {
     'arrayofGames': {gameId: req.body.selectedGameId}
   }})

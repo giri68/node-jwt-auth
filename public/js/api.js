@@ -1,17 +1,6 @@
 'use strict';
-/**
- * API: DATA ACCESS LAYER (using fetch())
- * 
- * Primary Job: communicates with API endpoints. 
- *  
- * Rule of Thumb:
- * - Never manipulation DOM directly
- * - No jquery on this page, use `fetch()` not `$.AJAX()` or `$.getJSON()`
- * - Do not call render methods from this layer
- * 
- */
 
-const ITEMS_URL = '/api/items/';
+const ITEMS_URL = '/api/boardgames/';
 const USERS_URL = '/api/users/';
 const LOGIN_URL = '/api/auth/login/';
 
